@@ -2,14 +2,25 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NIGHT SOCIETY - Music Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Prompt:wght@300;400;600&display=swap');
 
+        :root {
+            --primary-color: #8a2be2;
+            --secondary-color: #1e90ff;
+            --accent-color: #ff1493;
+            --bg-dark: #0a0a2a;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background-color: #0a0a2a;
+            background-color: var(--bg-dark);
             color: #ffffff;
             font-family: 'Prompt', sans-serif;
             margin: 0;
@@ -18,21 +29,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: pan-y;
         }
 
         .neon-text {
-            text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 30px #1e90ff;
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--secondary-color);
         }
 
         .glass-panel {
-            background: rgba(10, 10, 51, 0.7);
+            background: rgba(10, 10, 51, 0.75);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 2rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        /* ดาวระยิบระยับ */
         .stars {
             position: fixed;
             top: 0;
@@ -56,15 +67,14 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* การหมุนของโลโก้พระจันทร์ */
         .moon-glow {
-            filter: drop-shadow(0 0 15px #8a2be2);
+            filter: drop-shadow(0 0 15px var(--primary-color));
             animation: pulse 4s infinite ease-in-out;
         }
 
         @keyframes pulse {
-            0%, 100% { filter: drop-shadow(0 0 15px #8a2be2); }
-            50% { filter: drop-shadow(0 0 30px #ff1493); }
+            0%, 100% { filter: drop-shadow(0 0 15px var(--primary-color)); }
+            50% { filter: drop-shadow(0 0 30px var(--accent-color)); }
         }
 
         .slider {
@@ -80,10 +90,211 @@
             -webkit-appearance: none;
             width: 15px;
             height: 15px;
-            background: #1e90ff;
+            background: var(--secondary-color);
             cursor: pointer;
             border-radius: 50%;
-            box-shadow: 0 0 10px #1e90ff;
+            box-shadow: 0 0 10px var(--secondary-color);
+        }
+
+        .ai-active {
+            animation: ai-glow 2s infinite alternate;
+        }
+
+        @keyframes ai-glow {
+            from { box-shadow: 0 0 5px var(--primary-color); }
+            to { box-shadow: 0 0 20px var(--accent-color); }
+        }
+        
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+
+        .ai-loading {
+            display: inline-flex;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .ai-loading span {
+            width: 4px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .ai-loading span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-loading span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        /* แท็บเล็ต (หน้าจอต่ำกว่า 1024px) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 95% !important;
+                padding: 1rem !important;
+            }
+            .glass-panel {
+                padding: 1.5rem !important;
+                border-radius: 1.5rem !important;
+            }
+        }
+
+        /* มือถือ (หน้าจอต่ำกว่า 768px) */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+                height: auto;
+                padding: 1rem;
+                display: block;
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+                padding-top: max(1rem, env(safe-area-inset-top));
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+
+            .container {
+                max-width: 100% !important;
+                margin: 20px auto !important;
+                padding: 0.5rem !important;
+            }
+
+            .glass-panel {
+                padding: 1.25rem !important;
+                border-radius: 1.25rem !important;
+            }
+
+            .mb-8.flex.justify-center svg {
+                width: 130px !important;
+                height: 130px !important;
+            }
+
+            #trackName {
+                font-size: clamp(1.2rem, 4vw, 1.6rem) !important;
+                line-height: 1.3;
+            }
+            #artistName {
+                font-size: 0.6rem !important;
+            }
+
+            #visualizer {
+                width: 100% !important;
+                height: 40px !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .flex.items-center.justify-between.px-2.mb-6 {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            button, .slider::-webkit-slider-thumb {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .slider {
+                height: 6px !important;
+            }
+            .slider::-webkit-slider-thumb {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            
+            #playBtn {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            #aiResponseBox {
+                padding: 0.75rem !important;
+                margin-bottom: 1rem !important;
+            }
+            #aiContent {
+                font-size: 0.7rem !important;
+                line-height: 1.4;
+            }
+        }
+
+        /* มือถือขนาดเล็ก (หน้าจอต่ำกว่า 480px) */
+        @media (max-width: 480px) {
+            .glass-panel {
+                padding: 1rem !important;
+                border-radius: 1rem !important;
+            }
+
+            .mb-8.flex.justify-center svg {
+                width: 110px !important;
+                height: 110px !important;
+            }
+
+            #trackName {
+                font-size: 1.2rem !important;
+            }
+
+            .flex.items-center.gap-4 {
+                gap: 1.5rem !important;
+            }
+
+            #playBtn {
+                width: 55px !important;
+                height: 55px !important;
+            }
+
+            #status {
+                font-size: 0.5rem !important;
+                letter-spacing: 0.1em !important;
+            }
+        }
+
+        /* โหมดจอแนวนอน (Landscape) */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 0.5rem;
+                display: flex;
+                height: auto;
+                min-height: 100vh;
+            }
+            .container {
+                max-width: 90% !important;
+                margin: 10px auto !important;
+            }
+            .glass-panel {
+                padding: 1rem !important;
+            }
+            .mb-8.flex.justify-center {
+                margin-bottom: 0.5rem !important;
+            }
+            .mb-8.flex.justify-center svg {
+                width: 90px !important;
+                height: 90px !important;
+            }
+        }
+
+        /* Dark Mode รองรับระบบ */
+        @media (prefers-color-scheme: dark) {
+            .glass-panel {
+                background: rgba(5, 5, 25, 0.85) !important;
+                border-color: rgba(255, 255, 255, 0.15) !important;
+            }
+        }
+
+        /* ปุ่มที่ถูกปิดใช้งาน */
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
         }
     </style>
 </head>
@@ -95,7 +306,7 @@
         <div class="glass-panel p-8 text-center relative overflow-hidden">
             <!-- Logo Section -->
             <div class="mb-8 flex justify-center">
-                <svg width="180" height="180" viewBox="0 0 400 400" class="moon-glow">
+                <svg width="150" height="150" viewBox="0 0 400 400" class="moon-glow">
                     <circle cx="200" cy="200" r="160" fill="#000033" stroke="#222266" stroke-width="2"/>
                     <path d="M200 120 A80 80 0 1 1 200 280 A80 80 0 0 0 200 120 Z" fill="#8a2be2" opacity="0.9"/>
                     <text x="200" y="155" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="45" fill="#ffffff" font-weight="bold">NIGHT</text>
@@ -104,13 +315,21 @@
             </div>
 
             <!-- Song Info -->
-            <div class="mb-6">
-                <h1 id="trackName" class="text-2xl font-bold neon-text mb-1 tracking-wider">MIDNIGHT VIBE</h1>
-                <p id="artistName" class="text-blue-300 opacity-80 uppercase text-xs tracking-[0.3em]">Night Society Original</p>
+            <div class="mb-4">
+                <h1 id="trackName" class="text-2xl font-bold neon-text mb-1 tracking-wider uppercase">MIDNIGHT VIBE</h1>
+                <p id="artistName" class="text-blue-300 opacity-80 uppercase text-[10px] tracking-[0.3em]">Night Society Original</p>
+            </div>
+
+            <!-- AI Insight Display -->
+            <div id="aiResponseBox" class="hidden mb-6 p-3 bg-indigo-950/40 border border-indigo-500/30 rounded-xl text-left">
+                <p class="text-[10px] font-bold text-indigo-300 mb-1 uppercase tracking-tighter flex items-center">
+                    <span class="mr-1">✨</span> Gemini Insight
+                </p>
+                <p id="aiContent" class="text-xs text-indigo-100 leading-relaxed italic"></p>
             </div>
 
             <!-- Visualizer (Canvas) -->
-            <canvas id="visualizer" width="300" height="60" class="mx-auto mb-6"></canvas>
+            <canvas id="visualizer" width="300" height="50" class="mx-auto mb-6"></canvas>
 
             <!-- Progress Bar -->
             <div class="mb-6">
@@ -122,54 +341,189 @@
             </div>
 
             <!-- Controls -->
-            <div class="flex items-center justify-between px-4">
-                <button class="text-blue-300 hover:text-white transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <div class="flex items-center justify-between px-2 mb-6">
+                <!-- AI Feature: Mood Analysis -->
+                <button id="aiMoodBtn" title="Analyze Mood" class="text-indigo-400 hover:text-white transition-all transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12L2.69 6.5"/><path d="M12 12l5.31-9.5"/><path d="M12 12l9.5 5.31"/><path d="M12 12l-5.31 9.5"/><path d="M12 12L2.5 17.5"/></svg>
                 </button>
                 
-                <button id="prevBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
-                </button>
+                <div class="flex items-center gap-4">
+                    <button id="prevBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+                    </button>
 
-                <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(30,144,255,0.5)] transition-all transform hover:scale-110 active:scale-95">
-                    <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    <svg id="pauseIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-                </button>
+                    <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(30,144,255,0.5)] transition-all transform hover:scale-110 active:scale-95">
+                        <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg id="pauseIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </button>
 
-                <button id="nextBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
-                </button>
+                    <button id="nextBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+                    </button>
+                </div>
 
-                <button id="volumeBtn" class="text-blue-300 hover:text-white transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <!-- AI Feature: Lyric Generator -->
+                <button id="aiLyricBtn" title="Generate Lyrics" class="text-pink-400 hover:text-white transition-all transform hover:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                 </button>
             </div>
 
             <!-- System Message -->
-            <div id="status" class="mt-8 text-[10px] uppercase tracking-widest text-pink-500 font-bold opacity-0 transition-opacity">
-                Initializing System...
+            <div id="status" class="mt-4 text-[9px] uppercase tracking-[0.2em] text-blue-400 opacity-60">
+                AI Engine: Ready
+            </div>
+
+            <!-- Keyboard Shortcuts Info -->
+            <div class="mt-2 text-[8px] text-gray-500 opacity-50">
+                Space: Play/Pause • ←→: Change Track • Ctrl+M: Mood Analysis
             </div>
         </div>
     </div>
 
     <script>
-        // สร้างระบบดวงดาวพื้นหลัง
-        const starField = document.getElementById('starField');
-        const starCount = 100;
+        // ==================== INITIALIZATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
 
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 3;
-            star.style.width = size + 'px';
-            star.style.height = size + 'px';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-            starField.appendChild(star);
+        async function initializeApp() {
+            // 1. Setup API Key
+            setupAPI();
+            
+            // 2. Create stars with optimized performance
+            createStars();
+            
+            // 3. Load saved player state
+            loadPlayerState();
+            
+            // 4. Setup event listeners
+            setupEventListeners();
+            
+            // 5. Setup keyboard shortcuts
+            setupKeyboardShortcuts();
+            
+            // 6. Setup pull-to-refresh prevention
+            setupPullToRefreshPrevention();
+            
+            console.log('🎵 Night Society Music Player initialized');
         }
 
-        // ระบบเครื่องเล่นเพลงจำลอง
+        // ==================== API CONFIGURATION ====================
+        const apiKey = ""; // ผู้ใช้ต้องเพิ่ม API Key ของตัวเองที่นี่
+
+        function setupAPI() {
+            if (!apiKey) {
+                console.warn("⚠️ Gemini API Key ไม่ถูกตั้งค่า ฟีเจอร์ AI จะไม่ทำงาน");
+                
+                // ปิดการใช้งานปุ่ม AI
+                ['aiMoodBtn', 'aiLyricBtn'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.title = "ต้องการ API Key ในการใช้งาน";
+                        btn.classList.add("opacity-50", "cursor-not-allowed", "btn-disabled");
+                    }
+                });
+                
+                // แสดงข้อความใน status
+                const status = document.getElementById('status');
+                if (status) {
+                    status.innerHTML = 'AI Engine: <span class="text-yellow-400">API Key Required</span>';
+                }
+            }
+        }
+
+        // Gemini API Helper with Exponential Backoff
+        async function callGemini(prompt, systemPrompt = "") {
+            if (!apiKey) {
+                throw new Error("API Key is not configured");
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: systemPrompt ? { parts: [{ text: systemPrompt }] } : undefined
+            };
+
+            let delay = 1000;
+            let lastError = null;
+
+            for (let attempt = 0; attempt < 5; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(`API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "ไม่ได้รับคำตอบจาก AI";
+
+                } catch (error) {
+                    lastError = error;
+                    console.warn(`API Attempt ${attempt + 1} failed:`, error.message);
+                    
+                    if (attempt === 4) break;
+                    
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Exponential backoff
+                }
+            }
+
+            throw lastError || new Error("All API attempts failed");
+        }
+
+        // ==================== STARS ANIMATION (OPTIMIZED) ====================
+        function createStars() {
+            const starField = document.getElementById('starField');
+            if (!starField) return;
+
+            // Optimize for mobile: fewer stars on small screens
+            const isMobile = window.innerWidth < 768;
+            const starCount = isMobile ? 50 : 100;
+
+            // Clear existing stars
+            starField.innerHTML = '';
+
+            // Use document fragment for better performance
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const size = Math.random() * 2 + 1; // 1-3px
+                const duration = Math.random() * 3 + 2; // 2-5 seconds
+                
+                // Use CSS text for better performance
+                star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    --duration: ${duration}s;
+                    opacity: ${Math.random() * 0.5 + 0.3};
+                `;
+
+                fragment.appendChild(star);
+            }
+
+            starField.appendChild(fragment);
+        }
+
+        // Recreate stars on window resize (debounced)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(createStars, 250);
+        });
+
+        // ==================== AUDIO PLAYER LOGIC ====================
         const playBtn = document.getElementById('playBtn');
         const playIcon = document.getElementById('playIcon');
         const pauseIcon = document.getElementById('pauseIcon');
@@ -177,83 +531,353 @@
         const progress = document.getElementById('progress');
         const canvas = document.getElementById('visualizer');
         const ctx = canvas.getContext('2d');
+        const trackNameEl = document.getElementById('trackName');
 
         let isPlaying = false;
         let animationId;
+        const trackNames = ["MIDNIGHT VIBE", "NEON DREAMS", "STARRY SOCIETY", "PURPLE MOON"];
+        let currentTrack = 0;
 
+        // Play/Pause functionality
         playBtn.addEventListener('click', () => {
             isPlaying = !isPlaying;
+            
             if (isPlaying) {
                 playIcon.classList.add('hidden');
                 pauseIcon.classList.remove('hidden');
-                statusMsg.innerText = "Now Playing: Night Society Audio Engine";
-                statusMsg.style.opacity = "1";
+                statusMsg.innerText = "Audio Stream: Active";
                 startVisualizer();
+                savePlayerState(); // Save state when playing
             } else {
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
-                statusMsg.style.opacity = "0";
+                statusMsg.innerText = "Audio Stream: Paused";
                 cancelAnimationFrame(animationId);
+                savePlayerState(); // Save state when paused
             }
         });
 
-        // จำลอง Visualizer (คลื่นเสียงแบบในโลโก้)
+        // Visualizer function
         function startVisualizer() {
             function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (!ctx) return;
                 
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 const time = Date.now() * 0.005;
                 
-                // เส้นที่ 1 (สีน้ำเงินจากโลโก้)
+                // First wave (blue)
                 ctx.beginPath();
                 ctx.strokeStyle = '#1e90ff';
                 ctx.lineWidth = 3;
                 for (let x = 0; x < canvas.width; x++) {
-                    const y = 30 + Math.sin(x * 0.05 + time) * 15 * Math.sin(time * 0.2);
+                    const y = 25 + Math.sin(x * 0.05 + time) * 15 * Math.sin(time * 0.2);
                     if (x === 0) ctx.moveTo(x, y);
                     else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
 
-                // เส้นที่ 2 (สีชมพูจากโลโก้)
+                // Second wave (pink)
                 ctx.beginPath();
                 ctx.strokeStyle = '#ff1493';
                 ctx.lineWidth = 2;
                 for (let x = 0; x < canvas.width; x++) {
-                    const y = 30 + Math.cos(x * 0.03 + time * 1.5) * 10;
+                    const y = 25 + Math.cos(x * 0.03 + time * 1.5) * 10;
                     if (x === 0) ctx.moveTo(x, y);
                     else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
 
-                // อัปเดต Progress Bar จำลอง
-                if (parseInt(progress.value) < 100) {
-                    progress.value = (parseFloat(progress.value) + 0.05).toString();
-                } else {
-                    progress.value = "0";
+                // Update progress bar if playing
+                if (isPlaying) {
+                    const currentValue = parseFloat(progress.value);
+                    progress.value = (currentValue + 0.05) % 100;
+                    
+                    // Update time display
+                    updateTimeDisplay();
                 }
 
                 animationId = requestAnimationFrame(draw);
             }
-            draw();
+            
+            if (isPlaying) {
+                draw();
+            }
         }
 
-        // การเปลี่ยนเพลงจำลอง
-        const trackNames = ["MIDNIGHT VIBE", "NEON DREAMS", "STARRY SOCIETY", "PURPLE MOON"];
-        let currentTrack = 0;
+        // Initialize visualizer
+        startVisualizer();
 
+        // Update time display
+        function updateTimeDisplay() {
+            const currentTimeEl = document.getElementById('currentTime');
+            const durationEl = document.getElementById('duration');
+            
+            if (currentTimeEl && durationEl) {
+                const progressValue = parseFloat(progress.value);
+                const currentSeconds = Math.floor((progressValue / 100) * 225); // 3:45 = 225 seconds
+                const minutes = Math.floor(currentSeconds / 60);
+                const seconds = currentSeconds % 60;
+                
+                currentTimeEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // ==================== TRACK NAVIGATION ====================
         document.getElementById('nextBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack + 1) % trackNames.length;
-            document.getElementById('trackName').innerText = trackNames[currentTrack];
-            progress.value = "0";
+            changeTrack(1);
         });
 
         document.getElementById('prevBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack - 1 + trackNames.length) % trackNames.length;
-            document.getElementById('trackName').innerText = trackNames[currentTrack];
-            progress.value = "0";
+            changeTrack(-1);
         });
 
+        function changeTrack(direction) {
+            currentTrack = (currentTrack + direction + trackNames.length) % trackNames.length;
+            trackNameEl.innerText = trackNames[currentTrack];
+            progress.value = "0";
+            
+            // Hide AI response when changing track
+            const aiResponseBox = document.getElementById('aiResponseBox');
+            if (aiResponseBox) {
+                aiResponseBox.classList.add('hidden');
+            }
+            
+            // Save state
+            savePlayerState();
+            
+            // Update status
+            if (statusMsg) {
+                statusMsg.textContent = `Track: ${trackNames[currentTrack]}`;
+                setTimeout(() => {
+                    if (statusMsg) {
+                        statusMsg.textContent = isPlaying ? "Audio Stream: Active" : "Audio Stream: Paused";
+                    }
+                }, 2000);
+            }
+        }
+
+        // ==================== AI INTERACTION ====================
+        const aiResponseBox = document.getElementById('aiResponseBox');
+        const aiContent = document.getElementById('aiContent');
+
+        async function showAIResponse(type) {
+            // Check if API key is available
+            if (!apiKey) {
+                showAIError("⚠️ กรุณาตั้งค่า API Key ในโค้ดเพื่อใช้งานฟีเจอร์ AI");
+                return;
+            }
+
+            // Show loading state
+            if (aiResponseBox && aiContent) {
+                aiResponseBox.classList.remove('hidden');
+                aiContent.innerHTML = `
+                    <div class="ai-loading">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="ml-2">กำลังประมวลผล...</span>
+                `;
+            }
+
+            const currentTrackName = trackNames[currentTrack];
+            let prompt = "";
+            let systemPrompt = "You are a creative AI integrated into the NIGHT SOCIETY music app. Keep responses brief (1-2 sentences maximum).";
+
+            if (type === 'mood') {
+                prompt = `ช่วยบรรยายอารมณ์และบรรยากาศของเพลงชื่อ "${currentTrackName}" ในสไตล์กวีหรือคำบรรยายสั้นๆ ให้เข้ากับธีม Night Life และแสงนีออน`;
+                systemPrompt += " Respond in Thai with poetic style.";
+            } else if (type === 'lyric') {
+                prompt = `ช่วยแต่งท่อนฮุคเพลงภาษาไทยสั้นๆ 2-3 บรรทัด สำหรับเพลงชื่อ "${currentTrackName}" ที่มีเนื้อหาเกี่ยวกับค่ำคืน เมืองใหญ่ ความฝัน และสังคมยามราตรี`;
+                systemPrompt += " Respond in Thai with lyrical style.";
+            }
+
+            try {
+                const response = await callGemini(prompt, systemPrompt);
+                
+                if (aiContent) {
+                    aiContent.textContent = response || "ไม่ได้รับคำตอบจาก AI";
+                }
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    if (aiResponseBox && !aiResponseBox.classList.contains('hidden')) {
+                        aiResponseBox.classList.add('hidden');
+                    }
+                }, 10000);
+                
+            } catch (err) {
+                console.error('AI Error:', err);
+                showAIError("ขออภัย ระบบ AI ขัดข้องชั่วคราว กรุณาลองใหม่ในภายหลัง");
+                
+                // Auto-hide error after 5 seconds
+                setTimeout(() => {
+                    if (aiResponseBox && !aiResponseBox.classList.contains('hidden')) {
+                        aiResponseBox.classList.add('hidden');
+                    }
+                }, 5000);
+            }
+        }
+
+        function showAIError(message) {
+            if (aiResponseBox && aiContent) {
+                aiResponseBox.classList.remove('hidden');
+                aiContent.innerHTML = `<span class="text-red-300">${message}</span>`;
+            }
+        }
+
+        // AI Button Event Listeners
+        document.getElementById('aiMoodBtn').addEventListener('click', () => showAIResponse('mood'));
+        document.getElementById('aiLyricBtn').addEventListener('click', () => showAIResponse('lyric'));
+
+        // ==================== SESSION MEMORY ====================
+        function savePlayerState() {
+            try {
+                const state = {
+                    currentTrack: currentTrack,
+                    volume: progress.value,
+                    isPlaying: isPlaying,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('nightSocietyPlayer', JSON.stringify(state));
+            } catch (err) {
+                console.warn('Cannot save player state:', err);
+            }
+        }
+
+        function loadPlayerState() {
+            try {
+                const saved = localStorage.getItem('nightSocietyPlayer');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    
+                    // Load state if it's less than 1 hour old
+                    if (Date.now() - state.timestamp < 3600000) {
+                        currentTrack = state.currentTrack % trackNames.length;
+                        trackNameEl.innerText = trackNames[currentTrack];
+                        progress.value = state.volume || "0";
+                        
+                        if (state.isPlaying && !isPlaying) {
+                            playBtn.click(); // Auto-play if it was playing
+                        }
+                        
+                        updateTimeDisplay();
+                    }
+                }
+            } catch (err) {
+                console.warn('Cannot load player state:', err);
+            }
+        }
+
+        // Auto-save every 30 seconds
+        setInterval(savePlayerState, 30000);
+
+        // ==================== KEYBOARD SHORTCUTS ====================
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Prevent shortcuts in input fields
+                if (e.target.matches('input, textarea, button')) return;
+                
+                // Space: Play/Pause
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    playBtn.click();
+                }
+                
+                // ArrowRight: Next track
+                if (e.code === 'ArrowRight') {
+                    e.preventDefault();
+                    document.getElementById('nextBtn').click();
+                }
+                
+                // ArrowLeft: Previous track
+                if (e.code === 'ArrowLeft') {
+                    e.preventDefault();
+                    document.getElementById('prevBtn').click();
+                }
+                
+                // Ctrl+M: Mood Analysis
+                if (e.code === 'KeyM' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    if (!document.getElementById('aiMoodBtn').disabled) {
+                        document.getElementById('aiMoodBtn').click();
+                    }
+                }
+                
+                // Ctrl+L: Lyric Generator
+                if (e.code === 'KeyL' && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    if (!document.getElementById('aiLyricBtn').disabled) {
+                        document.getElementById('aiLyricBtn').click();
+                    }
+                }
+            });
+        }
+
+        // ==================== PULL-TO-REFRESH PREVENTION ====================
+        function setupPullToRefreshPrevention() {
+            let touchStartY = 0;
+            
+            document.addEventListener('touchstart', e => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            document.addEventListener('touchmove', e => {
+                const touchY = e.touches[0].clientY;
+                const touchDiff = touchStartY - touchY;
+                
+                // Prevent pull-to-refresh when at the top of the page
+                if (window.scrollY <= 0 && touchDiff < 0) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+
+        // ==================== SETUP EVENT LISTENERS ====================
+        function setupEventListeners() {
+            // Progress bar update
+            progress.addEventListener('input', () => {
+                updateTimeDisplay();
+                savePlayerState();
+            });
+            
+            // Window focus/blur events
+            window.addEventListener('blur', () => {
+                if (statusMsg) {
+                    statusMsg.textContent = "Player: Background";
+                }
+            });
+            
+            window.addEventListener('focus', () => {
+                if (statusMsg) {
+                    statusMsg.textContent = isPlaying ? "Audio Stream: Active" : "Audio Stream: Paused";
+                }
+            });
+            
+            // Online/Offline detection
+            window.addEventListener('online', () => {
+                if (statusMsg) {
+                    statusMsg.textContent = "Connection: Online";
+                    setTimeout(() => {
+                        if (statusMsg) {
+                            statusMsg.textContent = isPlaying ? "Audio Stream: Active" : "Audio Stream: Paused";
+                        }
+                    }, 2000);
+                }
+            });
+            
+            window.addEventListener('offline', () => {
+                if (statusMsg) {
+                    statusMsg.textContent = "Connection: Offline";
+                }
+            });
+        }
+
+        // ==================== INITIAL STATUS ====================
+        // Update initial status based on online state
+        if (statusMsg) {
+            statusMsg.textContent = navigator.onLine ? 
+                "AI Engine: Ready" : 
+                "Connection: Offline";
+        }
     </script>
 </body>
 </html>
