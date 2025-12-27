@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIGHT SOCIETY - Music Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Prompt:wght@300;400;600&display=swap');
+
+        body {
+            background-color: #0a0a2a;
+            color: #ffffff;
+            font-family: 'Prompt', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 0 0 30px #1e90ff;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 51, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ดาวระยิบระยับ */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* การหมุนของโลโก้พระจันทร์ */
+        .moon-glow {
+            filter: drop-shadow(0 0 15px #8a2be2);
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { filter: drop-shadow(0 0 15px #8a2be2); }
+            50% { filter: drop-shadow(0 0 30px #ff1493); }
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #222266;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #1e90ff;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #1e90ff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="starField"></div>
+
+    <div class="container max-w-md mx-auto p-6 z-10">
+        <div class="glass-panel p-8 text-center relative overflow-hidden">
+            <!-- Logo Section -->
+            <div class="mb-8 flex justify-center">
+                <svg width="180" height="180" viewBox="0 0 400 400" class="moon-glow">
+                    <circle cx="200" cy="200" r="160" fill="#000033" stroke="#222266" stroke-width="2"/>
+                    <path d="M200 120 A80 80 0 1 1 200 280 A80 80 0 0 0 200 120 Z" fill="#8a2be2" opacity="0.9"/>
+                    <text x="200" y="155" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="45" fill="#ffffff" font-weight="bold">NIGHT</text>
+                    <text x="200" y="275" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="28" fill="#ccccff">SOCIETY</text>
+                </svg>
+            </div>
+
+            <!-- Song Info -->
+            <div class="mb-6">
+                <h1 id="trackName" class="text-2xl font-bold neon-text mb-1 tracking-wider">MIDNIGHT VIBE</h1>
+                <p id="artistName" class="text-blue-300 opacity-80 uppercase text-xs tracking-[0.3em]">Night Society Original</p>
+            </div>
+
+            <!-- Visualizer (Canvas) -->
+            <canvas id="visualizer" width="300" height="60" class="mx-auto mb-6"></canvas>
+
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <input type="range" min="0" max="100" value="0" class="slider" id="progress">
+                <div class="flex justify-between text-[10px] mt-2 text-blue-200 opacity-60">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">3:45</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center justify-between px-4">
+                <button class="text-blue-300 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                </button>
+                
+                <button id="prevBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+                </button>
+
+                <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(30,144,255,0.5)] transition-all transform hover:scale-110 active:scale-95">
+                    <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <svg id="pauseIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                </button>
+
+                <button id="nextBtn" class="text-white hover:text-blue-400 transition-all transform active:scale-90">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+                </button>
+
+                <button id="volumeBtn" class="text-blue-300 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+            </div>
+
+            <!-- System Message -->
+            <div id="status" class="mt-8 text-[10px] uppercase tracking-widest text-pink-500 font-bold opacity-0 transition-opacity">
+                Initializing System...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // สร้างระบบดวงดาวพื้นหลัง
+        const starField = document.getElementById('starField');
+        const starCount = 100;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            starField.appendChild(star);
+        }
+
+        // ระบบเครื่องเล่นเพลงจำลอง
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const statusMsg = document.getElementById('status');
+        const progress = document.getElementById('progress');
+        const canvas = document.getElementById('visualizer');
+        const ctx = canvas.getContext('2d');
+
+        let isPlaying = false;
+        let animationId;
+
+        playBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+                statusMsg.innerText = "Now Playing: Night Society Audio Engine";
+                statusMsg.style.opacity = "1";
+                startVisualizer();
+            } else {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+                statusMsg.style.opacity = "0";
+                cancelAnimationFrame(animationId);
+            }
+        });
+
+        // จำลอง Visualizer (คลื่นเสียงแบบในโลโก้)
+        function startVisualizer() {
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const time = Date.now() * 0.005;
+                
+                // เส้นที่ 1 (สีน้ำเงินจากโลโก้)
+                ctx.beginPath();
+                ctx.strokeStyle = '#1e90ff';
+                ctx.lineWidth = 3;
+                for (let x = 0; x < canvas.width; x++) {
+                    const y = 30 + Math.sin(x * 0.05 + time) * 15 * Math.sin(time * 0.2);
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // เส้นที่ 2 (สีชมพูจากโลโก้)
+                ctx.beginPath();
+                ctx.strokeStyle = '#ff1493';
+                ctx.lineWidth = 2;
+                for (let x = 0; x < canvas.width; x++) {
+                    const y = 30 + Math.cos(x * 0.03 + time * 1.5) * 10;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // อัปเดต Progress Bar จำลอง
+                if (parseInt(progress.value) < 100) {
+                    progress.value = (parseFloat(progress.value) + 0.05).toString();
+                } else {
+                    progress.value = "0";
+                }
+
+                animationId = requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // การเปลี่ยนเพลงจำลอง
+        const trackNames = ["MIDNIGHT VIBE", "NEON DREAMS", "STARRY SOCIETY", "PURPLE MOON"];
+        let currentTrack = 0;
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentTrack = (currentTrack + 1) % trackNames.length;
+            document.getElementById('trackName').innerText = trackNames[currentTrack];
+            progress.value = "0";
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentTrack = (currentTrack - 1 + trackNames.length) % trackNames.length;
+            document.getElementById('trackName').innerText = trackNames[currentTrack];
+            progress.value = "0";
+        });
+
+    </script>
+</body>
+</html>
